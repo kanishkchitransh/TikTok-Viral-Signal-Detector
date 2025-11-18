@@ -1,0 +1,384 @@
+# =============================================================================
+# TikTok Viral Signal Detector - Git Ignore File
+# =============================================================================
+
+# =============================================================================
+# Environment & Secrets
+# =============================================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# API Keys and credentials
+secrets/
+credentials/
+*.pem
+*.key
+*.cert
+
+# =============================================================================
+# Python
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.spyderproject
+.spyproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# =============================================================================
+# Data Files
+# =============================================================================
+# Downloaded videos (temporary storage)
+data/raw/
+data/raw/*
+/tmp/videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Processed data
+data/processed/
+data/processed/*
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+
+# Embeddings
+data/chromadb/
+embeddings/
+*.faiss
+
+# Transcripts
+data/transcripts/
+*.json.gz
+
+# Datasets
+*.csv
+*.tsv
+!data/sample/*.csv
+data/*.csv
+data/*.parquet
+
+# =============================================================================
+# Machine Learning Models
+# =============================================================================
+data/models/
+models/*.pkl
+models/*.pth
+models/*.pt
+models/*.onnx
+models/*.h5
+models/*.pb
+*.joblib
+
+# Model checkpoints
+checkpoints/
+*.ckpt
+
+# TensorBoard logs
+runs/
+logs/tensorboard/
+
+# =============================================================================
+# Database
+# =============================================================================
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL
+*.sql.backup
+*.dump
+
+# ChromaDB
+chroma/
+chromadb/
+*.chroma
+
+# =============================================================================
+# Logs
+# =============================================================================
+logs/
+*.log
+*.log.*
+log/
+
+# =============================================================================
+# IDE & Editors
+# =============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# =============================================================================
+# Streamlit
+# =============================================================================
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# =============================================================================
+# Playwright
+# =============================================================================
+# Playwright browsers (installed via playwright install)
+# Keep these in global cache, not in project
+ms-playwright/
+
+# =============================================================================
+# FFmpeg & Video Processing
+# =============================================================================
+# Temporary video frames
+frames/
+temp_frames/
+*.jpg.tmp
+*.png.tmp
+
+# Audio extraction
+audio/
+temp_audio/
+*.wav
+*.m4a
+*.aac
+
+# =============================================================================
+# Notebooks
+# =============================================================================
+# Don't ignore notebooks themselves, but ignore their outputs
+# Use nbstripout for cleaning notebooks before commit
+
+# Large notebook outputs
+notebooks/.ipynb_checkpoints/
+
+# =============================================================================
+# Cache & Temporary Files
+# =============================================================================
+# Application cache
+.cache/
+cache/
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+
+# OS cache
+.Spotlight-V100
+.Trashes
+
+# =============================================================================
+# Project-Specific
+# =============================================================================
+# Scraped data exports
+exports/
+data_exports/
+
+# Test outputs
+test_outputs/
+debug_outputs/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+site/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Profiling data
+*.prof
+*.lprof
+
+# =============================================================================
+# Secrets & Credentials
+# =============================================================================
+# Never commit these
+*secret*
+*password*
+*credential*
+*token*
+*.env*
+!.env.example
+
+# SSH keys
+id_rsa
+id_rsa.pub
+*.pub
+
+# =============================================================================
+# Package managers
+# =============================================================================
+# npm (if using any JS tools)
+node_modules/
+package-lock.json
+yarn.lock
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Poetry
+poetry.lock
+
+# =============================================================================
+# Docker
+# =============================================================================
+# If using Docker in future
+docker-compose.override.yml
+.docker/
+
+# =============================================================================
+# Misc
+# =============================================================================
+# Backup files
+*.backup
+*.old
+
+# Compressed files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Large files (should be tracked with Git LFS if needed)
+*.bin
+
+# =============================================================================
+# Keep These Files
+# =============================================================================
+# Explicitly keep certain files that might match above patterns
+!.gitkeep
+!data/.gitkeep
+!logs/.gitkeep
+!data/sample/*
+!docs/*.md
