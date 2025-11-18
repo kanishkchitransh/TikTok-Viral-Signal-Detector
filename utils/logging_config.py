@@ -104,7 +104,7 @@ class LogContext:
     Context manager for adding context to log messages.
 
     Usage:
-        with LogContext(creator_id=123, agent="scraper"):
+        with LogContext(creator_id=123, agent="scraper") as logger:
             logger.info("processing_video", video_id="abc")
             # Logs: {"creator_id": 123, "agent": "scraper", "video_id": "abc", ...}
     """
@@ -124,7 +124,8 @@ class LogContext:
                 exc_type=exc_type.__name__,
                 exc_msg=str(exc_val)
             )
-        structlog.get_logger().unbind(*self.context.keys())
+        # Note: No need to unbind as we're using a bound instance
+        # The context is scoped to this bound logger only
 
 
 # Convenience functions for common log patterns

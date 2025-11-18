@@ -168,8 +168,11 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
             "niche": "fitness",
         }
 
-        # Save to database
+        # Save to database and get creator_id
         creator = self._save_creator(mock_creator)
+        creator_id = creator.creator_id  # Store ID before session closes
+        follower_count = creator.follower_count
+        total_videos = creator.total_videos
 
         # Create mock videos
         saved_videos = []
@@ -186,19 +189,19 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
                 "hashtags": ["fitness", "workout", "fyp"],
             }
 
-            video = self._save_video(mock_video, creator.creator_id)
+            video = self._save_video(mock_video, creator_id)
             if video:
                 saved_videos.append(video)
 
         return {
             "success": True,
             "handle": handle,
-            "creator_id": creator.creator_id,
+            "creator_id": creator_id,
             "videos_scraped": len(saved_videos),
             "safe_mode": True,
             "metadata": {
-                "follower_count": creator.follower_count,
-                "total_videos": creator.total_videos,
+                "follower_count": follower_count,
+                "total_videos": total_videos,
             }
         }
 
@@ -290,7 +293,7 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
             creator_data: Creator data dictionary
 
         Returns:
-            Creator: Saved creator object
+            Creator: Saved creator object (detached from session)
         """
         with self.get_db_session() as db:
             # Check if creator exists
@@ -322,6 +325,15 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
                     creator_id=creator.creator_id
                 )
 
+            # Access all attributes we need before session closes
+            # This loads them so they're available after detachment
+            _ = creator.creator_id
+            _ = creator.follower_count
+            _ = creator.total_videos
+
+            # Detach from session so we can use it outside
+            db.expunge(creator)
+
             return creator
 
     def _save_video(self, video_data: Dict[str, Any], creator_id: int) -> Optional[Video]:
@@ -333,7 +345,7 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
             creator_id: Creator ID foreign key
 
         Returns:
-            Optional[Video]: Saved video object or None
+            Optional[Video]: Saved video object (detached) or None
         """
         try:
             with self.get_db_session() as db:
@@ -345,12 +357,16 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
                         "video_exists",
                         video_id=video_data["video_id"]
                     )
+                    # Load attributes and detach
+                    _ = existing.video_id
+                    _ = existing.engagement_rate
+                    db.expunge(existing)
                     return existing
 
                 # Create new video
                 video = Video(creator_id=creator_id, **video_data)
 
-                # Calculate engagement rate
+                # Calculate engagement rate (important for SQLite)
                 video.engagement_rate = video.calculate_engagement_rate()
 
                 db.add(video)
@@ -361,6 +377,11 @@ class ScraperAgent(DatabaseAgent, RetryableAgent):
                     video_id=video_data["video_id"],
                     creator_id=creator_id
                 )
+
+                # Load attributes before detaching
+                _ = video.video_id
+                _ = video.engagement_rate
+                db.expunge(video)
 
                 return video
 

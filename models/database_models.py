@@ -1,33 +1,43 @@
 """
 SQLAlchemy ORM models for TikTok Viral Signal Detector.
-Maps to PostgreSQL database schema.
+Maps to PostgreSQL database schema, with SQLite compatibility for testing.
 """
 
 from sqlalchemy import (
     Column, Integer, String, Boolean, Float, Text, TIMESTAMP,
-    ForeignKey, BigInteger, CheckConstraint, ARRAY, Index
+    ForeignKey, BigInteger, CheckConstraint, Index, JSON
 )
-from sqlalchemy.dialects.postgresql import JSONB, ENUM
+from sqlalchemy.dialects.postgresql import JSONB, ENUM, ARRAY as PG_ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.types import TypeDecorator
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+import json
 
-from config.database import Base
+from config.database import Base, get_engine
 
 
-# Custom ENUM types
-engagement_trend_enum = ENUM(
-    'increasing', 'decreasing', 'stable',
-    name='engagement_trend_type',
-    create_type=False
-)
+# Database-agnostic types
+def get_json_type():
+    """Returns JSONB for PostgreSQL, JSON for others."""
+    engine = get_engine()
+    if engine.dialect.name == 'postgresql':
+        return JSONB
+    return JSON
 
-embedding_type_enum = ENUM(
-    'visual', 'text', 'audio',
-    name='embedding_type',
-    create_type=False
-)
+
+def get_array_type(item_type=String):
+    """Returns ARRAY for PostgreSQL, JSON for others."""
+    engine = get_engine()
+    if engine.dialect.name == 'postgresql':
+        return PG_ARRAY(item_type)
+    return JSON  # Store arrays as JSON in SQLite
+
+
+# Custom ENUM types (simplified for SQLite compatibility)
+engagement_trend_enum = String(20)
+embedding_type_enum = String(20)
 
 
 class Creator(Base):
@@ -94,8 +104,8 @@ class Video(Base):
     # Video metadata
     upload_date = Column(TIMESTAMP, index=True)
     caption = Column(Text)
-    hashtags = Column(ARRAY(Text))
-    mentions = Column(ARRAY(Text))
+    hashtags = Column(JSON)
+    mentions = Column(JSON)
     music_name = Column(String(500))
     music_author = Column(String(255))
     duration_seconds = Column(Integer)
@@ -177,7 +187,7 @@ class VideoAnalysis(Base):
     speech_rate = Column(Float)
 
     # Visual analysis (CLIP)
-    dominant_colors = Column(JSONB)
+    dominant_colors = Column(JSON)
     scene_changes = Column(Integer)
     average_brightness = Column(Float)
 
@@ -191,9 +201,9 @@ class VideoAnalysis(Base):
     # NLP analysis
     sentiment_score = Column(Float, index=True)
     sentiment_label = Column(String(20))
-    topics = Column(ARRAY(Text))
-    keywords = Column(ARRAY(Text))
-    entities = Column(JSONB)
+    topics = Column(JSON)
+    keywords = Column(JSON)
+    entities = Column(JSON)
 
     # Content characteristics
     face_time_ratio = Column(Float)
@@ -309,13 +319,13 @@ class Prediction(Base):
     model_type = Column(String(50))
 
     # Feature importance
-    feature_importance = Column(JSONB)
-    top_positive_features = Column(ARRAY(Text))
-    top_negative_features = Column(ARRAY(Text))
+    feature_importance = Column(JSON)
+    top_positive_features = Column(JSON)
+    top_negative_features = Column(JSON)
 
     # Risk assessment
-    risk_factors = Column(ARRAY(Text))
-    opportunity_factors = Column(ARRAY(Text))
+    risk_factors = Column(JSON)
+    opportunity_factors = Column(JSON)
     risk_score = Column(Float)
 
     # Intelligence report
@@ -325,9 +335,9 @@ class Prediction(Base):
     optimal_outreach_timing = Column(String(50))
 
     # Personalization suggestions
-    talking_points = Column(ARRAY(Text))
-    content_themes = Column(ARRAY(Text))
-    partnership_ideas = Column(ARRAY(Text))
+    talking_points = Column(JSON)
+    content_themes = Column(JSON)
+    partnership_ideas = Column(JSON)
 
     # Validation
     actual_outcome = Column(String(20))
