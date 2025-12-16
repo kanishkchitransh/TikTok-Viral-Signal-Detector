@@ -30,7 +30,7 @@ This project demonstrates a production-grade multi-agent AI system for predictin
 
 - **Multimodal AI**: Analyzes what creators SAY (Whisper), SHOW (CLIP), and their audience engagement patterns
 - **Agentic Architecture**: 5 specialized agents orchestrated with LangGraph
-- **Predictive ML**: Ensemble of XGBoost and Neural Networks (target: 75%+ Precision-Recall AUC)
+- **Predictive ML**: Ensemble of XGBoost and Neural Networks (target: 65-75% Precision-Recall AUC)
 - **Intelligence Reports**: AI-generated actionable insights using Gemini 2.5 Flash
 
 **Perfect for**: Brands seeking early partnerships with micro-creators before they become expensive.
@@ -425,12 +425,35 @@ tiktok-viral-detector/
 
 ## Performance Metrics
 
-**Target Benchmarks**:
+**System Performance Targets**:
 - Scraping success rate: >90%
 - Video processing: 30+ videos/hour (Colab GPU)
-- ML Precision-Recall AUC: >0.75
 - End-to-end latency: <5 min per creator
 - Error rate: <5%
+
+**ML Model Performance Goals** (Not yet trained):
+
+*These are research-based targets, not achieved results. Actual performance will be measured after model training in Week 4.*
+
+| Metric | Baseline (Metadata Only) | Target (Multimodal) | Stretch Goal | Notes |
+|--------|-------------------------|---------------------|--------------|-------|
+| **Precision-Recall AUC** | 55-60% | **65-70%** | 70-75% | Depends on dataset size (5,000+ examples for upper range) |
+| **Precision @ 10%** | 30-35% | 40-50% | 50-60% | Of top 10% predictions, % actually viral |
+| **Recall @ 50% Threshold** | 25-30% | 50-60% | 60-70% | % of viral creators correctly identified |
+
+**Why these targets?**
+- Similar problems (social media virality prediction) typically achieve 60-70% PR-AUC
+- Multimodal features (video+audio+text) typically add 5-10% over metadata-only baselines
+- Class imbalance (only ~5% of creators go viral) makes this challenging
+- Small datasets (<5,000 examples) typically underperform by 5-10% vs large-scale studies
+- Our ensemble approach may recover 2-5% through diversity
+
+**Factors affecting actual performance**:
+- ⚠️ Dataset size: Need 3,000+ labeled examples for 65%+, 5,000+ for 70%+
+- ⚠️ Label quality: Manual labeling of "viral potential" is subjective
+- ⚠️ Data freshness: TikTok algorithm changes rapidly
+- ⚠️ Compute constraints: Free-tier GPU limits model complexity
+- ✅ Feature engineering: Strong multimodal features can compensate for small data
 
 **Current Status** (Week 1 - COMPLETE):
 - Environment setup: ✅ Complete
@@ -438,8 +461,9 @@ tiktok-viral-detector/
 - Agent 1 (Scraper): ✅ Complete and tested
 - Infrastructure: ✅ Complete (config, logging, rate limiting)
 - Agent 2-5: ⏳ Not started
-- ML Model training: ⏳ Not started (target: 75%+ PR-AUC)
+- ML Model training: ⏳ Not started
 - Full pipeline: ⏳ Pending
+- **Performance validation: ⏳ Pending model training**
 
 ---
 
