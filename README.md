@@ -26,14 +26,16 @@
 
 ## Overview
 
-This project demonstrates a production-grade multi-agent AI system for predicting TikTok creator virality. Unlike traditional tools that only analyze metadata, this system uses:
+This project demonstrates a production-grade multi-agent AI system for predicting TikTok creator virality. Unlike traditional tools that only analyze metadata, this system will use:
 
 - **Multimodal AI**: Analyzes what creators SAY (Whisper), SHOW (CLIP), and their audience engagement patterns
 - **Agentic Architecture**: 5 specialized agents orchestrated with LangGraph
-- **Predictive ML**: Ensemble of XGBoost and Neural Networks with 75%+ Precision-Recall AUC
+- **Predictive ML**: Ensemble of XGBoost and Neural Networks (target: 75%+ Precision-Recall AUC)
 - **Intelligence Reports**: AI-generated actionable insights using Gemini 2.5 Flash
 
 **Perfect for**: Brands seeking early partnerships with micro-creators before they become expensive.
+
+**Current Status**: Week 1 complete - environment setup and data collection agent (scraper) fully functional.
 
 ---
 
@@ -238,19 +240,37 @@ psql -U postgres -d tiktok_viral_detector -c "\dt"
 
 ## Usage
 
-### Single Creator Analysis
+### Single Creator Analysis (Week 1 - Available Now)
 
 ```python
+from agents.scraper import ScraperAgent
+
+# Create scraper agent
+agent = ScraperAgent()
+
+# Scrape a creator (uses safe mode if no TikTok API token)
+result = agent.run(creator_handle="@fitnessguru123", max_videos=15)
+
+if result['status'] == 'success':
+    print(f"Creator ID: {result['data']['creator_id']}")
+    print(f"Videos scraped: {result['data']['videos_scraped']}")
+    print(f"Followers: {result['data']['metadata']['follower_count']:,}")
+```
+
+### Full Pipeline Analysis (Coming in Week 5)
+
+```python
+# This will be available after Agents 2-5 are implemented
 from orchestration.workflow import analyze_creator
 
-# Analyze a creator
+# Analyze a creator end-to-end
 result = analyze_creator("@fitnessguru123")
 
 print(f"Viral Probability: {result['viral_probability']:.1%}")
 print(f"Report:\n{result['intelligence_report']}")
 ```
 
-### Streamlit Web Interface
+### Streamlit Web Interface (Coming in Week 6)
 
 ```bash
 # Start the app
@@ -338,11 +358,12 @@ tiktok-viral-detector/
 
 ## Development Roadmap
 
-### ✅ Week 1: Foundation (CURRENT)
+### ✅ Week 1: Foundation (COMPLETE)
 - [x] Environment setup
 - [x] Database schema
-- [ ] Agent 1: Scraper implementation
-- [ ] Data collection (200 creators)
+- [x] Agent 1: Scraper implementation
+- [x] Infrastructure (config, logging, rate limiting)
+- [ ] Data collection (200 creators) - ready to run
 
 ### 📋 Week 2: Video Processing
 - [ ] Colab: Whisper transcription
@@ -411,9 +432,13 @@ tiktok-viral-detector/
 - End-to-end latency: <5 min per creator
 - Error rate: <5%
 
-**Current Status**:
+**Current Status** (Week 1 - COMPLETE):
 - Environment setup: ✅ Complete
-- Scraper agent: 🚧 In progress
+- Database schema: ✅ Complete
+- Agent 1 (Scraper): ✅ Complete and tested
+- Infrastructure: ✅ Complete (config, logging, rate limiting)
+- Agent 2-5: ⏳ Not started
+- ML Model training: ⏳ Not started (target: 75%+ PR-AUC)
 - Full pipeline: ⏳ Pending
 
 ---
